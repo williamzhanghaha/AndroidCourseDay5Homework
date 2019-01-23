@@ -1,12 +1,14 @@
 package com.camp.bit.todolist.debug;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,12 +16,20 @@ import android.widget.Toast;
 
 import com.camp.bit.todolist.R;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DebugActivity extends AppCompatActivity {
+
+    public static final String TAG = "DebugActivity";
 
     private static int REQUEST_CODE_STORAGE_PERMISSION = 1001;
 
@@ -65,7 +75,38 @@ public class DebugActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO 把一段文本写入某个存储区的文件中，再读出来，显示在 fileText 上
-                fileText.setText("TODO");
+                //fileText.setText("TODO");
+                String filename = "testfile";
+                String filecontent = "test file content";
+                FileOutputStream outputStream;
+                try {
+                    outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+                    outputStream.write(filecontent.getBytes());
+                    outputStream.close();
+                } catch (Exception e) {
+                    Log.d(TAG, "onClick: file output error");
+                }
+                File directory = getApplicationContext().getFilesDir();
+                File file = new File(directory, filename);
+                InputStream inputStream;
+                String line;
+                StringBuffer stringBuffer = new StringBuffer();
+                try {
+                    inputStream = new FileInputStream(file);
+                    Reader reader = new InputStreamReader(inputStream);
+                    BufferedReader bufferedReader = new BufferedReader(reader);
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuffer.append(line);
+                    }
+                    if (bufferedReader != null) {
+                        bufferedReader.close();
+                    }
+                    String content = stringBuffer.toString();
+                    fileText.setText(content);
+
+                } catch (Exception e) {
+                    Log.d(TAG, "onClick: file input error");
+                }
             }
         });
     }
