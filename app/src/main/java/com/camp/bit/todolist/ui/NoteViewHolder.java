@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.camp.bit.todolist.NoteOperator;
@@ -33,6 +35,7 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
     private TextView contentText;
     private TextView dateText;
     private View deleteBtn;
+
 
     public NoteViewHolder(@NonNull View itemView, NoteOperator operator) {
         super(itemView);
@@ -64,6 +67,21 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
+        //TODO
+        switch (note.getPriority()) {
+            case 0:
+                itemView.setBackground(null);
+                break;
+            case 1:
+                itemView.setBackgroundResource(R.color.priority_high);
+                break;
+            case 2:
+                itemView.setBackgroundResource(R.color.priority_emergency);
+                break;
+
+        }
+
+
         if (note.getState() == State.DONE) {
             contentText.setTextColor(Color.GRAY);
             contentText.setPaintFlags(contentText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -71,5 +89,13 @@ public class NoteViewHolder extends RecyclerView.ViewHolder {
             contentText.setTextColor(Color.BLACK);
             contentText.setPaintFlags(contentText.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
         }
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO
+                operator.editNote(note);
+            }
+        });
     }
 }

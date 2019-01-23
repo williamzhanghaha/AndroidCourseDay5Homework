@@ -12,4 +12,6 @@ public interface NoteOperator {
     void deleteNote(Note note);
 
     void updateNote(Note note);
+
+    void editNote(Note note);
 }
